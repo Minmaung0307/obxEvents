@@ -69,7 +69,7 @@ body {
 .filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   align-items: flex-end;
 }
 .field {
@@ -166,6 +166,23 @@ input[type="search"]:focus {
     height: 160px;
   }
 }
+
+/* ✅ mobile: stack, search at bottom full-width */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters .field {
+    width: 100%;
+  }
+
+  .filters .field-search {
+    order: 3;           /* always last row */
+  }
+}
+
 .card-badge-row {
   padding: 6px 12px 0;
   display: flex;

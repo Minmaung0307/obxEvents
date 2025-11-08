@@ -80,6 +80,58 @@
       "recurring": true
     },
     {
+      "title": "OBX Rod & Custom Festival",
+      "dateLabel": "Early May (Annual)",
+      "isoDate": "2025-05-02",
+      "town": "Nags Head / OBX Area",
+      "venue": "Soundside Event Site & multiple cruise-in spots",
+      "address": "Nags Head, Kill Devil Hills, Kitty Hawk, NC",
+      "snippet": "Car lovers’ weekend with classic cars, hot rods, cruise-ins, vendors, food and live music across the Outer Banks.",
+      "url": "https://obxrodandcustomfestival.com/",
+      "image": "https://images.pexels.com/photos/210182/pexels-photo-210182.jpeg",
+      "tags": ["car show", "family", "auto", "annual"],
+      "recurring": true
+    },
+    {
+      "title": "Outer Banks Watermelon Festival",
+      "dateLabel": "Early August (Annual)",
+      "isoDate": "2025-08-01",
+      "town": "Nags Head",
+      "venue": "Kitty Hawk Kites at Jockey's Ridge Crossing",
+      "address": "3933 S Croatan Hwy, Nags Head, NC",
+      "snippet": "Watermelon games, contests, kids’ activities and live entertainment supporting local community causes.",
+      "url": "https://www.kittyhawk.com/event/outer-banks-watermelon-festival/",
+      "image": "https://images.pexels.com/photos/4614200/pexels-photo-4614200.jpeg",
+      "tags": ["family", "festival", "watermelon", "kids", "annual"],
+      "recurring": true
+    },
+    {
+      "title": "Pineapple & Hot Sauce Fest at Outlets Nags Head",
+      "dateLabel": "Summer (Check dates)",
+      "isoDate": "2025-07-15",
+      "town": "Nags Head",
+      "venue": "Outlets Nags Head",
+      "address": "7100 S Croatan Hwy, Nags Head, NC",
+      "snippet": "Tropical flavors, pineapple-inspired treats, spicy food, music and shop promos in one fun coastal festival.",
+      "url": "https://www.facebook.com/outletsnagshead/",
+      "image": "https://images.pexels.com/photos/4106483/pexels-photo-4106483.jpeg",
+      "tags": ["food", "pineapple", "shopping", "summer"],
+      "recurring": true
+    },
+    {
+      "title": "OBX Brewtag",
+      "dateLabel": "Fall (Annual)",
+      "isoDate": "2025-10-04",
+      "town": "Nags Head",
+      "venue": "Soundside Event Site",
+      "address": "6800 S Croatan Hwy, Nags Head, NC",
+      "snippet": "Teams launch keg ‘aircrafts’ while guests enjoy craft beer, food and live entertainment by the sound.",
+      "url": "https://www.obxbrewtag.com/",
+      "image": "https://images.pexels.com/photos/5538480/pexels-photo-5538480.jpeg",
+      "tags": ["beer", "festival", "fun", "annual"],
+      "recurring": true
+    },
+    {
       "title": "OBX Veterans Week",
       "dateLabel": "November 7–13, 2025",
       "isoDate": "2025-11-07",
@@ -104,6 +156,32 @@
       "url": "https://example.com/first-flight-day",
       "image": "https://images.pexels.com/photos/46148/aircraft-jet-landing-cloud-46148.jpeg",
       "tags": ["history", "ceremony", "family"],
+      "recurring": true
+    },
+    {
+      "title": "Wright Kite Festival",
+      "dateLabel": "Summer (Annual)",
+      "isoDate": "2025-07-13",
+      "town": "Kill Devil Hills",
+      "venue": "Wright Brothers National Memorial",
+      "address": "Kill Devil Hills, NC",
+      "snippet": "Sky full of giant kites, demos, and family-friendly activities at the birthplace of flight.",
+      "url": "https://www.kittyhawk.com/",
+      "image": "https://images.pexels.com/photos/58558/pexels-photo-58558.jpeg",
+      "tags": ["kites", "family", "outdoor", "annual"],
+      "recurring": true
+    },
+    {
+      "title": "OBX Pridefest",
+      "dateLabel": "September (Annual)",
+      "isoDate": "2025-09-13",
+      "town": "Nags Head / Manteo / KDH",
+      "venue": "Multiple venues",
+      "address": "Outer Banks, NC",
+      "snippet": "Weekend of music, drag shows, cruises, and community events celebrating diversity on the Outer Banks.",
+      "url": "https://www.obxpridefest.com/",
+      "image": "https://images.pexels.com/photos/8467412/pexels-photo-8467412.jpeg",
+      "tags": ["pride", "music", "nightlife", "annual"],
       "recurring": true
     },
     {
@@ -234,6 +312,58 @@
       "url": "https://example.com/soundside-sunsets",
       "image": "https://images.pexels.com/photos/1647160/pexels-photo-1647160.jpeg",
       "tags": ["music", "sunset", "outdoor"],
+      "recurring": true
+    },
+    {
+      "title": "Hangin’ With Santa & Kites With Lights",
+      "dateLabel": "Thanksgiving Weekend (Annual)",
+      "isoDate": "2025-11-29",
+      "town": "Nags Head",
+      "venue": "Jockey's Ridge & Kitty Hawk Kites",
+      "address": "Nags Head, NC",
+      "snippet": "Holiday hangout with Santa, illuminated kites over the dunes, and festive evening on the sound.",
+      "url": "https://www.kittyhawk.com/",
+      "image": "https://images.pexels.com/photos/1556698/pexels-photo-1556698.jpeg",
+      "tags": ["christmas", "family", "lights", "annual"],
+      "recurring": true
+    },
+    {
+      "title": "WinterLights at Elizabethan Gardens",
+      "dateLabel": "Late Nov – Dec (Annual)",
+      "isoDate": "2025-11-28",
+      "town": "Manteo",
+      "venue": "Elizabethan Gardens",
+      "address": "1411 National Park Dr, Manteo, NC",
+      "snippet": "Magical walking tour with thousands of holiday lights in a historic garden setting.",
+      "url": "https://www.elizabethangardens.org/",
+      "image": "https://images.pexels.com/photos/3817087/pexels-photo-3817087.jpeg",
+      "tags": ["lights", "christmas", "family", "annual"],
+      "recurring": true
+    },
+    {
+      "title": "Dowdy Park Farmers & Craft Markets",
+      "dateLabel": "Seasonal (Weekly / Bi-weekly)",
+      "isoDate": "2025-06-01",
+      "town": "Nags Head",
+      "venue": "Dowdy Park",
+      "address": "Nags Head, NC",
+      "snippet": "Local produce, food trucks, artisans and live music in a family-friendly park.",
+      "url": "https://www.nagsheadnc.gov/",
+      "image": "https://images.pexels.com/photos/8638950/pexels-photo-8638950.jpeg",
+      "tags": ["market", "local", "family"],
+      "recurring": true
+    },
+    {
+      "title": "Soundside Holiday Market",
+      "dateLabel": "December (Annual)",
+      "isoDate": "2025-12-07",
+      "town": "Nags Head",
+      "venue": "Soundside Event Site",
+      "address": "Nags Head, NC",
+      "snippet": "Art, crafts, gifts, food and music by the water — perfect for holiday shopping at the beach.",
+      "url": "https://www.outerbanks.org/",
+      "image": "https://images.pexels.com/photos/1303098/pexels-photo-1303098.jpeg",
+      "tags": ["market", "christmas", "local", "annual"],
       "recurring": true
     }
   ]
