@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>OBX Events Hub — Outer Banks Live Events</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+        content="Live events for Kill Devil Hills, Kitty Hawk, Nags Head, and Manteo. Filter by location and keyword with real-time updates from official OBX calendars." />
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+        rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <div class="logo-dot"></div>
+      <div class="brand-text">
+        <h1>OBX Events Hub</h1>
+        <p>Live guide for Kill Devil Hills, Kitty Hawk, Nags Head &amp; Manteo.</p>
+      </div>
+    </div>
+
+    <div class="filters">
+      <div class="field">
+        <label for="locationSelect"><i class="ri-map-pin-line"></i> Location</label>
+        <select id="locationSelect">
+          <option value="all">All locations</option>
+          <option value="Kill Devil Hills">Kill Devil Hills</option>
+          <option value="Kitty Hawk">Kitty Hawk</option>
+          <option value="Nags Head">Nags Head</option>
+          <option value="Manteo">Manteo</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="searchInput"><i class="ri-search-line"></i> Keyword</label>
+        <input id="searchInput" type="search"
+               placeholder="Search: festival, music, run, kids, market..." />
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="summaryBar" class="summary-bar">
+      <span id="eventCount">Loading events…</span>
+      <span class="hint">
+        Data pulled from official Outer Banks calendars. Always click through to confirm latest details.
+      </span>
+    </section>
+
+    <section id="events" class="grid"></section>
+
+    <section class="sources">
+      <h2>Official event calendars</h2>
+      <ul>
+        <li><a href="https://www.outerbanks.org/events/" target="_blank" rel="noopener">
+          Outer Banks Visitors Bureau — Events</a></li>
+        <li><a href="https://www.outerbankschamber.com/main/event-calendar/" target="_blank" rel="noopener">
+          OBX Chamber of Commerce — Event Calendar</a></li>
+        <li><a href="https://outerbanksthisweek.com/events" target="_blank" rel="noopener">
+          OuterBanksThisWeek.com — Events</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>OBX Events Hub — for locals &amp; visitors.</div>
+    <div class="muted">
+      Times/venues can change — please verify on official links before attending.
+    </div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "site": "obx-events-hub",
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "/api/events", "function": "obxEvents" },
+      { "source": "**", "destination": "/index.html" }
+    ]
+  }
+}
