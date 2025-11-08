@@ -1,39 +1,242 @@
-const API_URL = "/api/events"; // Cloud Function endpoint
+// ==== CONFIG ====
+const API_URL = "/events.json";
+const DAY_MS = 24 * 60 * 60 * 1000;
 
-const $  = (s, r=document) => r.querySelector(s);
-const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
-
+// ==== STATE ====
+let RAW_EVENTS = [];
 let EVENTS = [];
-let lastUpdated = null;
 
+// ==== HELPERS ====
+function parseISO(d) {
+  if (!d) return null;
+  const dt = new Date(d);
+  return isNaN(dt.getTime()) ? null : dt;
+}
+
+// auto compute next occurrence & status
+function normalizeEvent(ev, now = new Date()) {
+  const base = parseISO(ev.isoDate);
+  const recurring = !!ev.recurring;
+  let nextDate = null;
+  let status = "unknown";
+  let statusLabel = "Unknown";
+  let statusKind = "unknown";
+
+  if (!base) {
+    return { ...ev, recurring, nextDate, status, statusLabel, statusKind };
+  }
+
+  const sevenDays = 7 * DAY_MS;
+
+  if (!recurring) {
+    const diff = base.getTime() - now.getTime();
+    if (diff < -sevenDays) {
+      status = "past";
+      statusLabel = "Past event";
+      statusKind = "past";
+    } else if (Math.abs(diff) <= sevenDays) {
+      status = "now";
+      statusLabel = "Happening now / this week";
+      statusKind = "now";
+    } else {
+      status = "upcoming";
+      statusLabel = "Upcoming (confirmed date)";
+      statusKind = "upcoming";
+    }
+    nextDate = base;
+  } else {
+    // annual-style recurring
+    let y = now.getFullYear();
+    let candidate = new Date(base);
+    candidate.setFullYear(y);
+
+    // လက်ရှိနှစ်ထဲကရက်က လွန်သွားရင် နောက်နှစ်ကိုရွေ့
+    if (candidate.getTime() < now.getTime() - sevenDays) {
+      candidate.setFullYear(y + 1);
+    }
+
+    nextDate = candidate;
+    const diff = candidate.getTime() - now.getTime();
+
+    if (Math.abs(diff) <= sevenDays) {
+      status = "now";
+      statusLabel = "This week (annual; confirm on official site)";
+      statusKind = "now";
+    } else if (diff > sevenDays && diff <= 90 * DAY_MS) {
+      status = "upcoming";
+      statusLabel = "Upcoming (annual; confirm on official site)";
+      statusKind = "upcoming";
+    } else if (diff > 90 * DAY_MS) {
+      status = "future";
+      statusLabel = "Future (annual; date estimated)";
+      statusKind = "future";
+    } else {
+      status = "past";
+      statusLabel = "Past (no upcoming date)";
+      statusKind = "past";
+    }
+  }
+
+  // Next date label
+  let nextDateLabel = ev.dateLabel || "";
+  if (nextDate && recurring) {
+    const mo = nextDate.toLocaleString("en-US", { month: "long" });
+    const d = nextDate.getDate();
+    const y = nextDate.getFullYear();
+    nextDateLabel = `${mo} ${d}, ${y} (est.)`;
+  } else if (nextDate && !recurring) {
+    const mo = nextDate.toLocaleString("en-US", { month: "long" });
+    const d = nextDate.getDate();
+    const y = nextDate.getFullYear();
+    nextDateLabel = `${mo} ${d}, ${y}`;
+  }
+
+  return {
+    ...ev,
+    recurring,
+    nextDate,
+    nextDateLabel,
+    status,
+    statusLabel,
+    statusKind
+  };
+}
+
+// ==== FETCH & INIT ====
+async function fetchEvents() {
+  try {
+    const res = await fetch(API_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to load events.json");
+    const data = await res.json();
+    RAW_EVENTS = Array.isArray(data.events) ? data.events : [];
+    const now = new Date();
+    EVENTS = RAW_EVENTS.map(ev => normalizeEvent(ev, now));
+
+    // sort by nextDate (or isoDate fallback)
+    EVENTS.sort((a, b) => {
+      const da = a.nextDate || parseISO(a.isoDate) || new Date(0);
+      const db = b.nextDate || parseISO(b.isoDate) || new Date(0);
+      return da - db;
+    });
+
+    renderEvents();
+  } catch (err) {
+    console.error("Event API error", err);
+    const wrap = document.getElementById("events");
+    if (wrap) {
+      wrap.innerHTML = `<div class="card"><div class="card-body">Failed to load events.</div></div>`;
+    }
+  }
+}
+
+// ==== RENDER ====
+// random fallback images (no local /img required)
+const FALLBACK_IMAGES = [
+  "https://images.pexels.com/photos/2404370/pexels-photo-2404370.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/1761419/pexels-photo-1761419.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/226424/pexels-photo-226424.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/2908175/pexels-photo-2908175.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/1047442/pexels-photo-1047442.jpeg?auto=compress&cs=tinysrgb&w=1200"
+];
+
+function pickFallback(title = "") {
+  let hash = 0;
+  for (let i = 0; i < title.length; i++) {
+    hash = (hash * 31 + title.charCodeAt(i)) >>> 0;
+  }
+  return FALLBACK_IMAGES[hash % FALLBACK_IMAGES.length];
+}
+function safeImage(url) {
+  if (!url) return "";
+
+  // Pexels images: param မပါသေးရင်သာ optimize params ပေါင်းမယ်
+  if (url.includes("images.pexels.com")) {
+    if (!url.includes("auto=compress")) {
+      url += (url.includes("?") ? "&" : "?") +
+        "auto=compress&cs=tinysrgb&w=1200&h=800";
+    }
+  }
+
+  return url;
+}
 function eventCard(ev) {
-  const hero = ev.image || "";
-  const tags = (ev.tags || [])
-    .map(t => `<span class="tag">#${t}</span>`)
-    .join("");
+  let img = ev.image || ev.img || ev.cover || ev.imageUrl || "";
+  if (!img) {
+    img = pickFallback(ev.title || ev.town || "obx");
+  }
+
+  const townLabel = (ev.town || ev.area || "").trim() || "Outer Banks";
+
+  const badgeClass = {
+    past: "badge badge-past",
+    now: "badge badge-now",
+    upcoming: "badge badge-upcoming",
+    future: "badge badge-future",
+    unknown: "badge badge-unknown"
+  }[ev.status] || "badge badge-unknown";
+
+  // short status text
+  const statusShort = (() => {
+    if (ev.recurring) {
+      if (ev.status === "now") return "Annual · This week";
+      if (ev.status === "upcoming") return "Annual · Upcoming";
+      if (ev.status === "future") return "Annual · Future";
+      if (ev.status === "past") return "Annual · Past";
+      return "Annual";
+    } else {
+      if (ev.status === "now") return "This week";
+      if (ev.status === "upcoming") return "Upcoming";
+      if (ev.status === "future") return "Future";
+      if (ev.status === "past") return "Past";
+      return "Event";
+    }
+  })();
 
   return `
     <article class="card">
-      <div class="card-hero" style="${hero ? `background-image:url('${hero}')` : ""}"></div>
+      <div class="card-hero has-img"
+           style="background-image:url('${safeImage(img)}')"></div>
+
+      <!-- ✅ Badge directly under image -->
+      <div class="card-badge-row">
+        <span class="${badgeClass}" title="${ev.statusLabel || ""}">
+          ${statusShort}
+        </span>
+      </div>
+
       <div class="card-header">
-        <div class="card-icon"><i class="ri-calendar-event-line"></i></div>
-        <div>
-          <h3 class="card-title">${ev.title}</h3>
-          <p class="card-location">
-            <i class="ri-map-pin-line"></i>
-            ${ev.town || ev.area || ""}${
-              ev.venue ? " • " + ev.venue : ""
-            }
-          </p>
+        <div class="card-title-wrap">
+          <h3 class="card-title">
+            ${ev.title}
+            <span class="card-location-inline">
+              · <i class="ri-map-pin-line"></i>
+              ${townLabel}${ev.venue ? " • " + ev.venue : ""}
+            </span>
+          </h3>
         </div>
       </div>
+
       <div class="card-body">
-        ${ev.dateLabel ? `<div><strong>Date:</strong> ${ev.dateLabel}</div>` : ""}
-        ${ev.timeLabel ? `<div><strong>Time:</strong> ${ev.timeLabel}</div>` : ""}
-        ${ev.address ? `<div><strong>Address:</strong> ${ev.address}</div>` : ""}
-        ${ev.snippet ? `<div>${ev.snippet}</div>` : ""}
-        ${tags ? `<div class="tags">${tags}</div>` : ""}
+        ${
+          ev.nextDateLabel
+            ? `<div class="row"><strong>Date:</strong> ${ev.nextDateLabel}</div>`
+            : ev.dateLabel
+            ? `<div class="row"><strong>Date:</strong> ${ev.dateLabel}</div>`
+            : ""
+        }
+        ${ev.address ? `<div class="row"><strong>Address:</strong> ${ev.address}</div>` : ""}
+        ${ev.snippet ? `<div class="snippet">${ev.snippet}</div>` : ""}
+        ${
+          Array.isArray(ev.tags) && ev.tags.length
+            ? `<div class="tags">
+                 ${ev.tags.map(t => `<span class="tag">#${t}</span>`).join("")}
+               </div>`
+            : ""
+        }
       </div>
+
+      <!-- ✅ Sticks to bottom (see CSS) -->
       <div class="card-actions">
         ${
           ev.url
@@ -41,15 +244,8 @@ function eventCard(ev) {
                  Official site <i class="ri-external-link-line"></i>
                </a>`
             : `<span class="btn-link secondary">
-                 <i class="ri-information-line"></i>Details onsite
+                 Check local listings
                </span>`
-        }
-        ${
-          ev.town
-            ? `<span class="btn-link secondary">
-                 <i class="ri-compass-3-line"></i>${ev.town}
-               </span>`
-            : ""
         }
       </div>
     </article>
@@ -57,108 +253,73 @@ function eventCard(ev) {
 }
 
 function renderEvents() {
-  const loc = $("#locationSelect").value;
-  const q = ($("#searchInput").value || "").toLowerCase().trim();
+  const locSel = document.getElementById("locationSelect");
+  const searchEl = document.getElementById("searchInput");
+  const statusSel = document.getElementById("statusFilter");
 
-  const filtered = EVENTS.filter(ev => {
-    const matchLoc =
-      loc === "all" ||
-      (ev.town || ev.area || "")
-        .toLowerCase() === loc.toLowerCase();
+  const loc = (locSel?.value || "all").toLowerCase();
+  const q = (searchEl?.value || "").toLowerCase().trim();
+  const statusFilter = (statusSel?.value || "all").toLowerCase();
 
-    if (!matchLoc) return false;
+  const list = EVENTS.filter(ev => {
+    // location
+    const town = (ev.town || ev.area || "").toLowerCase();
+    if (loc !== "all" && town !== loc) return false;
 
-    if (!q) return true;
+    // status
+    if (statusFilter !== "all" && ev.status !== statusFilter) return false;
 
-    const hay = [
-      ev.title,
-      ev.town,
-      ev.area,
-      ev.venue,
-      ev.address,
-      ev.dateLabel,
-      ev.timeLabel,
-      ev.snippet,
-      ...(ev.tags || [])
-    ]
-      .join(" ")
-      .toLowerCase();
+    // search
+    if (q) {
+      const hay = [
+        ev.title,
+        ev.town,
+        ev.area,
+        ev.venue,
+        ev.address,
+        ev.dateLabel,
+        ev.nextDateLabel,
+        ev.snippet,
+        ...(ev.tags || [])
+      ]
+        .join(" ")
+        .toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
 
-    return hay.includes(q);
+    return true;
   });
 
-  const container = $("#events");
-  container.innerHTML = "";
+  const wrap = document.getElementById("events");
+  if (!wrap) return;
+  wrap.innerHTML = "";
 
-  if (!filtered.length) {
-    container.innerHTML = `
+  if (!list.length) {
+    wrap.innerHTML = `
       <div class="card">
         <div class="card-body">
-          No events match your filters at the moment.
-          Try another location / keyword or check the official calendars below.
+          No events found. Try a different filter or keyword.
         </div>
       </div>`;
   } else {
-    filtered
-      .sort((a, b) => {
-        // if they have isoDate, sort by that
-        if (a.isoDate && b.isoDate) {
-          return new Date(a.isoDate) - new Date(b.isoDate);
-        }
-        return (a.title || "").localeCompare(b.title || "");
-      })
-      .forEach(ev => {
-        container.insertAdjacentHTML("beforeend", eventCard(ev));
-      });
+    list.forEach(ev => {
+      wrap.insertAdjacentHTML("beforeend", eventCard(ev));
+    });
   }
 
-  const ec = $("#eventCount");
+  const ec = document.getElementById("eventCount");
   if (ec) {
-    const ts = lastUpdated
-      ? ` • updated ${new Date(lastUpdated).toLocaleTimeString()}`
-      : "";
-    ec.textContent = `${filtered.length} event${
-      filtered.length !== 1 ? "s" : ""
-    } showing${ts}`;
+    ec.textContent = `${list.length} event${list.length !== 1 ? "s" : ""}`;
   }
 }
 
-async function fetchEvents() {
-  try {
-    const res = await fetch(API_URL, { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to load events");
-    const data = await res.json();
-    EVENTS = Array.isArray(data.events) ? data.events : [];
-    lastUpdated = data.lastUpdated || Date.now();
-  } catch (err) {
-    console.error("Event API error:", err);
-
-    // Fallback sample (if API fails)
-    EVENTS = [
-      {
-        title: "Wright Brothers First Flight Celebration",
-        town: "Kill Devil Hills",
-        venue: "Wright Brothers National Memorial",
-        dateLabel: "Every Dec 17",
-        timeLabel: "Daytime",
-        url: "https://www.nps.gov/wrbr/index.htm",
-        tags: ["annual", "history", "family"],
-        image:
-          "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&w=900"
-      }
-    ];
-    lastUpdated = Date.now();
-  }
-
-  renderEvents();
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  $("#locationSelect")?.addEventListener("change", renderEvents);
-  $("#searchInput")?.addEventListener("input", renderEvents);
-
+// ==== INIT LISTENERS ====
+document.addEventListener("DOMContentLoaded", () => {
   fetchEvents();
-
-  // Optional: auto-refresh every 10 minutes
-  setInterval(fetchEvents, 10 * 60 * 1000);
+  const searchEl = document.getElementById("searchInput");
+  if (searchEl) searchEl.addEventListener("input", renderEvents);
+  const locSel = document.getElementById("locationSelect");
+  if (locSel) locSel.addEventListener("change", renderEvents);
+  const statusSel = document.getElementById("statusFilter");
+  if (statusSel) statusSel.addEventListener("change", renderEvents);
 });
