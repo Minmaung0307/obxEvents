@@ -127,7 +127,7 @@
       "address": "6800 S Croatan Hwy, Nags Head, NC",
       "snippet": "Teams launch keg ‘aircrafts’ while guests enjoy craft beer, food and live entertainment by the sound.",
       "url": "https://www.obxbrewtag.com/",
-      "image": "https://images.pexels.com/photos/5538480/pexels-photo-5538480.jpeg",
+      "image": "/img/brewtag-event.jpg",
       "tags": ["beer", "festival", "fun", "annual"],
       "recurring": true
     },
@@ -193,7 +193,7 @@
       "address": "OBX, NC",
       "snippet": "Scenic race routes over sounds and through coastal towns.",
       "url": "https://example.com/obx-marathon",
-      "image": "https://images.pexels.com/photos/240277/pexels-photo-240277.jpeg",
+      "image": "/img/obse-hp-image-4.jpg",
       "tags": ["sports", "marathon", "run"],
       "recurring": true
     },
@@ -219,7 +219,7 @@
       "address": "Manteo, NC",
       "snippet": "Holiday parade and waterfront tree lighting.",
       "url": "https://example.com/manteo-christmas",
-      "image": "https://images.pexels.com/photos/731928/pexels-photo-731928.jpeg",
+      "image": "/img/manteoChristmas.avif",
       "tags": ["holiday", "parade", "family"],
       "recurring": true
     },
@@ -310,7 +310,7 @@
       "address": "Nags Head, NC",
       "snippet": "Weekly sunset concerts overlooking the sound.",
       "url": "https://example.com/soundside-sunsets",
-      "image": "https://images.pexels.com/photos/1647160/pexels-photo-1647160.jpeg",
+      "image": "/img/liveMusic.jpeg",
       "tags": ["music", "sunset", "outdoor"],
       "recurring": true
     },

@@ -140,6 +140,12 @@ const FALLBACK_IMAGES = [
   "https://images.pexels.com/photos/1047442/pexels-photo-1047442.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ];
 
+// Example: good, stable URLs
+const HERO_OBX_1 = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80";
+const HERO_OBX_2 = "https://images.unsplash.com/photo-1507525428034-2d8a8f4b4f87?auto=format&fit=crop&w=1200&q=80";
+const HERO_OBX_PIER = "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1200&q=80";
+const HERO_OBX_DUNES = "https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?auto=format&fit=crop&w=1200&q=80";
+
 // ==== TOURIST PLACES ====
 // static featured spots (non-events)
 const PLACES = [
@@ -157,7 +163,7 @@ const PLACES = [
     town: "Kill Devil Hills",
     category: "History / Museum",
     snippet: "Iconic site of the first powered flight with museum, markers, and panoramic views.",
-    image: "https://images.pexels.com/photos/1647160/pexels-photo-1647160.jpeg",
+    image: "/img/wrightBrothers.jpg",
     url: "https://www.nps.gov/wrbr/index.htm",
     tags: ["history", "family", "museum"]
   },
@@ -193,7 +199,7 @@ const PLACES = [
     town: "Manteo",
     category: "Shops / Harbor",
     snippet: "Charming harbor town with cafés, boutiques, boardwalk, and sunset views.",
-    image: "https://images.pexels.com/photos/731928/pexels-photo-731928.jpeg",
+    image: "/img/manteo-waterfront.jpg",
     url: "https://www.outerbanks.org/places-to-go/roanoke-island-manteo/",
     tags: ["shops", "waterfront", "dining"]
   }

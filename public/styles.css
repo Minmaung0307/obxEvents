@@ -366,3 +366,16 @@ input[type="search"]:focus {
   background: #f9fafb;
   color: #9ca3af;
 }
+
+.hero {
+  width: 100%;
+  height: 160px;             /* ပုံအမြင့် */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  border-radius: 16px;
+}
+
+.card-x {
+  background-image: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80");
+}
